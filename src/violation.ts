@@ -2095,9 +2095,8 @@ for (const violation of iterateViolations()) {
   violationMeta.maxDate = Math.max(violationMeta.maxDate, toTimestamp(violation.date))
 }
 
-function toTimestamp(dateString: string, format = 'DD.MM.YYYY'): number {
-  const dj = dayjs
-  const td = dj(dateString, format)
+export function toTimestamp(dateString: string, format = 'DD.MM.YYYY'): number {
+  const td = dayjs(dateString, format)
 
   return td.valueOf()
 }

@@ -5,11 +5,13 @@ import { FeatureLike } from 'ol/Feature'
 import { ViolationRegions } from '../violation'
 import { Vector as VectorLayer } from 'ol/layer'
 import { Vector as VectorSource } from 'ol/source'
+import dayjs from 'dayjs'
 
 export function AcademViolationMap(props: {
   region?: ViolationRegions
-  onSelectFeature(feature?: FeatureLike): void
   category?: string
+  range?: [dayjs.Dayjs, dayjs.Dayjs]
+  onSelectFeature(feature?: FeatureLike): void
 }) {
   const [_, setMap] = useState<Map>()
   const [vectorLayer, setVectorLayer] = useState<VectorLayer<VectorSource<Feature>>>()
@@ -38,7 +40,7 @@ export function AcademViolationMap(props: {
 
   useEffect(() => {
     if (vectorLayer !== undefined) {
-      vectorLayer.setStyle(createStyle(props.category, props.region))
+      vectorLayer.setStyle(createStyle(props.category, props.region, props.range))
     }
   }, [props, vectorLayer])
 

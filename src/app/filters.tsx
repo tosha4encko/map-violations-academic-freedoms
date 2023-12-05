@@ -9,6 +9,8 @@ export const Filters = (props: {
   onRegionChange(e: ViolationRegions)
   category?: string
   onCategoryChange(value: string): void
+  range?: [dayjs.Dayjs, dayjs.Dayjs]
+  onRangeChange(range: [dayjs.Dayjs, dayjs.Dayjs]): void
 }) => {
   return (
     <div style={{ display: 'flex', justifyContent: 'center' }}>
@@ -40,6 +42,8 @@ export const Filters = (props: {
       </Select>
       <div className="filters-item">
         <DatePicker.RangePicker
+          value={props.range}
+          onChange={props.onRangeChange}
           defaultValue={[dayjs(violationMeta.minDate), dayjs(violationMeta.maxDate)]}
         />
       </div>

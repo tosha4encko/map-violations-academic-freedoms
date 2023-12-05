@@ -1,18 +1,29 @@
 import React, { useMemo } from 'react'
-import { IViolation } from '../violation'
+import { IViolation, toTimestamp } from '../violation'
+import dayjs from 'dayjs'
 
 export function ViolationsTable(props: {
   region: string
   category?: string
+  range?: [dayjs.Dayjs, dayjs.Dayjs]
   violations: IViolation[]
 }) {
   const currentViolations = useMemo(() => {
+    let currentViolations = props.violations
     if (props.category) {
-      return props.violations.filter(({ type }) => type === props.category)
+      currentViolations = props.violations.filter(({ type }) => type === props.category)
+    }
+    if (props.range) {
+      currentViolations = currentViolations.filter(({ date }) => {
+        const current = toTimestamp(date)
+        const b1 = props.range[0].valueOf()
+        const b2 = props.range[1].valueOf()
+        return current >= b1 && current <= b2
+      })
     }
 
-    return props.violations
-  }, [props.category, props.violations])
+    return currentViolations
+  }, [props.category, props.violations, props.range])
 
   return (
     <div className="violations-table-container">

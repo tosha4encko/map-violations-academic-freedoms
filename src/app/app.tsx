@@ -3,9 +3,11 @@ import { AcademViolationMap } from './map'
 import { IViolation, violation, ViolationRegions, violationTypes } from '../violation'
 import { ViolationsTable } from './violations-table'
 import { Filters } from './filters'
+import dayjs from 'dayjs'
 
 export const App = () => {
   const [region, setRegion] = useState<ViolationRegions>()
+  const [range, setRange] = useState<[dayjs.Dayjs, dayjs.Dayjs]>()
   const [category, setCategory] = useState<string>()
   const violations: IViolation[] = region ? violation[region] : []
 
@@ -20,14 +22,22 @@ export const App = () => {
         onRegionChange={setRegion}
         category={category}
         onCategoryChange={setCategory}
+        range={range}
+        onRangeChange={setRange}
       />
       <AcademViolationMap
+        range={range}
         region={region}
-        onSelectFeature={(feature) => setRegion(feature.get('region'))}
+        onSelectFeature={(feature) => setRegion(feature?.get('region'))}
         category={category}
       />
       {violations?.length ? (
-        <ViolationsTable region={region} violations={violations || []} category={category} />
+        <ViolationsTable
+          region={region}
+          violations={violations || []}
+          category={category}
+          range={range}
+        />
       ) : null}
     </div>
   )

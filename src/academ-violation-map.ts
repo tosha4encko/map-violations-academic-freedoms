@@ -5,11 +5,12 @@ import { Layer as LayerBase, Vector as VectorLayer } from 'ol/layer'
 import { Vector as VectorSource } from 'ol/source'
 import { Feature } from 'ol'
 import { borders } from './borders'
-import { violation, ViolationRegions } from './violation'
+import { toTimestamp, violation, ViolationRegions } from './violation'
 import { Style, Stroke, Fill } from 'ol/style'
 import Overlay from 'ol/Overlay'
 import { transformExtent } from 'ol/proj'
 import { defaults as defaultInteractions } from 'ol/interaction'
+import dayjs from 'dayjs'
 
 const DEFAULT_CENTER = [11811200.657045184, 10877122.707841385]
 const DEFAULT_ZOOM = 2.96
@@ -42,11 +43,25 @@ export function buildTooltipHTML(groups: any, region: string): string {
   `
 }
 
-export function createStyle(violationType?: string, region?: ViolationRegions) {
+export function createStyle(
+  violationType?: string,
+  region?: ViolationRegions,
+  range?: [dayjs.Dayjs, dayjs.Dayjs],
+) {
   const heatMapStyle = (feature) => {
     let currentViolations = violation[feature.get('region')]
-    if (currentViolations && violationType) {
-      currentViolations = currentViolations.filter(({ type }) => type === violationType)
+    if (currentViolations) {
+      if (violationType) {
+        currentViolations = currentViolations.filter(({ type }) => type === violationType)
+      }
+      if (range) {
+        currentViolations = currentViolations.filter(({ date }) => {
+          const current = toTimestamp(date)
+          const b1 = range[0].valueOf()
+          const b2 = range[1].valueOf()
+          return current >= b1 && current <= b2
+        })
+      }
     }
     const intensity = currentViolations?.length || 0
     const opacity = intensity / 5
