@@ -8,43 +8,39 @@ import { Vector as VectorSource } from 'ol/source'
 
 export function AcademViolationMap(props: {
   region?: ViolationRegions
-  onSelectFeature: (feature?: FeatureLike) => void
+  onSelectFeature(feature?: FeatureLike): void
+  category?: string
 }) {
   const [_, setMap] = useState<Map>()
   const [vectorLayer, setVectorLayer] = useState<VectorLayer<VectorSource<Feature>>>()
+
   useEffect(() => {
     const layer = createLayer()
-    layer.setStyle(createStyle())
+    layer.setStyle(createStyle(props.category))
     const map = createMap(layer)
     createTooltip(map)
     // @ts-ignore
     window.map = map
     setMap(map)
+    setVectorLayer(layer)
 
     map.on('click', (ev) => {
       const features = map.getFeaturesAtPixel(ev.pixel)
       if (features?.length) {
         props.onSelectFeature(features[0])
         props.onSelectFeature(features[0])
-        setVectorLayer(layer)
       } else {
         props.onSelectFeature()
-        layer.setStyle(createStyle())
+        layer.setStyle(createStyle(props.category))
       }
     })
   }, [])
 
   useEffect(() => {
-    if (vectorLayer === undefined) {
-      return
+    if (vectorLayer !== undefined) {
+      vectorLayer.setStyle(createStyle(props.category, props.region))
     }
-
-    if (props.region === undefined) {
-      vectorLayer.setStyle(createStyle())
-    } else {
-      vectorLayer.setStyle(createStyle(props.region))
-    }
-  }, [props.region, vectorLayer])
+  }, [props, vectorLayer])
 
   return (
     <div id="map" style={{ width: 1000, height: 600, margin: '0 auto' }}>

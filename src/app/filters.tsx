@@ -7,23 +7,31 @@ import dayjs from 'dayjs'
 export const Filters = (props: {
   region: 'all' | ViolationRegions
   onRegionChange(e: ViolationRegions)
+  category?: string
+  onCategoryChange(value: string): void
 }) => {
   return (
     <div style={{ display: 'flex', justifyContent: 'center' }}>
       <Select
         className="filters-item"
-        defaultValue="all"
+        placeholder="Все регионы"
         showSearch
         value={props.region}
         onSelect={props.onRegionChange}
       >
-        <Select.Option key="all"> Все регионы </Select.Option>
+        <Select.Option value={undefined}>Все регионы</Select.Option>
         {borders.features.map((feature) => (
           <Select.Option key={feature.properties.region}>{feature.properties.region}</Select.Option>
         ))}
       </Select>
-      <Select className="filters-item" defaultValue="all" showSearch>
-        <Select.Option key="all"> Все категории </Select.Option>
+      <Select
+        className="filters-item"
+        placeholder="Все категории"
+        showSearch
+        value={props.category}
+        onSelect={props.onCategoryChange}
+      >
+        <Select.Option value={undefined}>Все категории</Select.Option>
         {Array.from(violationMeta.types).map((type) => (
           <Select.Option key={type} value={type}>
             {type}

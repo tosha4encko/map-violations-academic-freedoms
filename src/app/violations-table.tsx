@@ -1,7 +1,19 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import { IViolation } from '../violation'
 
-export function ViolationsTable(props: { region: string; violations: IViolation[] }) {
+export function ViolationsTable(props: {
+  region: string
+  category?: string
+  violations: IViolation[]
+}) {
+  const currentViolations = useMemo(() => {
+    if (props.category) {
+      return props.violations.filter(({ type }) => type === props.category)
+    }
+
+    return props.violations
+  }, [props.category, props.violations])
+
   return (
     <div className="violations-table-container">
       <h3 className="violations-table-title"> {props.region}</h3>
@@ -15,7 +27,7 @@ export function ViolationsTable(props: { region: string; violations: IViolation[
           </tr>
         </thead>
         <tbody>
-          {props.violations.map((item, index) => (
+          {currentViolations.map((item, index) => (
             <tr key={index}>
               <td title={item.date} className="violations-table-table-date">
                 {item.date}
