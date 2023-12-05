@@ -5,7 +5,7 @@
   "description": "",
   "main": "index.tsx",
   "scripts": {
-    "start": "webpack --mode production --watch",
+    "start": "webpack --mode development --watch",
     "build": "webpack --mode production",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d dist index.html"
@@ -31,6 +31,8 @@
   },
   "dependencies": {
     "ol": "^8.2.0",
+    "antd": "^5.11.5",
+    "dayjs": "^1.11.10",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   }

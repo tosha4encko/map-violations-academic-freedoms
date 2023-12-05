@@ -5,11 +5,10 @@ import { Layer as LayerBase, Vector as VectorLayer } from 'ol/layer'
 import { Vector as VectorSource } from 'ol/source'
 import { Feature } from 'ol'
 import { borders } from './borders'
-import { violation } from './violation'
-import { Style, Stroke, Fill, Circle } from 'ol/style'
+import { ViolationRegions, violation } from './violation'
+import { Style, Stroke, Fill } from 'ol/style'
 import Overlay from 'ol/Overlay'
 import { transformExtent } from 'ol/proj'
-import { FeatureLike } from 'ol/Feature'
 import { defaults as defaultInteractions } from 'ol/interaction'
 
 const DEFAULT_CENTER = [11811200.657045184, 10877122.707841385]
@@ -43,7 +42,7 @@ export function buildTooltipHTML(groups: any, region: string): string {
   `
 }
 
-export function createStyle(activeFeature?: FeatureLike) {
+export function createStyle(region?: ViolationRegions) {
   const heatMapStyle = (feature) => {
     const currentViolations = violation[feature.get('region')]
     const intensity = currentViolations?.length || 0
@@ -58,7 +57,7 @@ export function createStyle(activeFeature?: FeatureLike) {
       }),
       stroke: new Stroke({
         color: '#101010',
-        width: activeFeature === feature ? 3 : 2,
+        width: region === feature.get('region') ? 3 : 2,
       }),
     })
   }

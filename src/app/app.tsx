@@ -1,12 +1,11 @@
 import React, { useState } from 'react'
 import { AcademViolationMap } from './map'
-import { FeatureLike } from 'ol/Feature'
-import { IViolation, violation } from '../violation'
+import { IViolation, violation, ViolationRegions } from '../violation'
 import { ViolationsTable } from './violations-table'
+import { Filters } from './filters'
 
 export const App = () => {
-  const [feature, setFeature] = useState<FeatureLike>()
-  const region = feature?.get('region')
+  const [region, setRegion] = useState<ViolationRegions>()
   const violations: IViolation[] = region ? violation[region] : []
 
   return (
@@ -15,7 +14,11 @@ export const App = () => {
       <h4 style={{ textAlign: 'center', fontSize: 13, color: 'rgba(16,16,16,.6)' }}>
         Информация актуальна на декабрь 2023
       </h4>
-      <AcademViolationMap onSelectFeature={setFeature} />
+      <Filters region={region} onRegionChange={setRegion} />
+      <AcademViolationMap
+        region={region}
+        onSelectFeature={(feature) => setRegion(feature.get('region'))}
+      />
       {violations?.length ? (
         <ViolationsTable region={region} violations={violations || []} />
       ) : null}

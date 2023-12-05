@@ -1,13 +1,18 @@
+import dayjs from 'dayjs'
+import customParseFormat from 'dayjs/plugin/customParseFormat'
+
+dayjs.extend(customParseFormat)
+
 export interface IViolation {
-  date: string
-  where: string
-  type: string
-  description: string
-  source: string
-  region: string
+  readonly date: string
+  readonly where: string
+  readonly type: string
+  readonly description: string
+  readonly source: string
+  readonly region: string
 }
 
-export const violation = {
+export const violation: Record<string, IViolation[]> = {
   'Свердловская обл.': [
     {
       date: '12.01.2023',
@@ -2060,4 +2065,39 @@ export const violation = {
       region: 'Республика Башкортостан',
     },
   ],
-} as const
+}
+
+export type ViolationRegions = keyof typeof violation
+
+export const violationTypes = Object.values(violation).reduce((acc, item) => {
+  item.forEach(({ type }) => acc.add(type))
+
+  return acc
+}, new Set<string>())
+
+function* iterateViolations() {
+  for (const vi of Object.values(violation)) {
+    for (const item of vi) {
+      yield item
+    }
+  }
+}
+
+export const violationMeta: { types: Set<string>; minDate: number; maxDate: number } = {
+  types: new Set(),
+  minDate: Number.MAX_SAFE_INTEGER,
+  maxDate: 0,
+}
+
+for (const violation of iterateViolations()) {
+  violationMeta.types.add(violation.type)
+  violationMeta.minDate = Math.min(violationMeta.minDate, toTimestamp(violation.date))
+  violationMeta.maxDate = Math.max(violationMeta.maxDate, toTimestamp(violation.date))
+}
+
+function toTimestamp(dateString: string, format = 'DD.MM.YYYY'): number {
+  const dj = dayjs
+  const td = dj(dateString, format)
+
+  return td.valueOf()
+}

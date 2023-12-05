@@ -1,8 +1,9 @@
 {
   "compilerOptions": {
+    "downlevelIteration": true,
     "jsx": "react",
     "target": "es5",
-    "module": "es6",
+    "module": "esnext",
     "strict": false,
     "esModuleInterop": true,
     "skipLibCheck": true,
