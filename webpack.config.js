@@ -1,4 +1,5 @@
 const path = require('path')
+const webpack = require('webpack')
 
 module.exports = {
   entry: './src/index.tsx',
@@ -23,4 +24,5 @@ module.exports = {
   resolve: {
     extensions: ['.ts', '.js', '.tsx'],
   },
+  plugins: [new webpack.EnvironmentPlugin(['IS_NOTION'])],
 }

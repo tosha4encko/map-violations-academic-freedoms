@@ -25,9 +25,13 @@ export function ViolationsTable(props: {
     return currentViolations
   }, [props.category, props.violations, props.range])
 
+  if (currentViolations.length === 0) {
+    return null
+  }
+
   return (
-    <div className="violations-table-container">
-      <h3 className="violations-table-title"> {props.region}</h3>
+    <div className="violations-table-container" style={{ maxHeight: 450 }}>
+      {!process.env.IS_NOTION ? <h3 className="violations-table-title"> {props.region}</h3> : null}
       <table className="violations-table-table">
         <thead>
           <tr>

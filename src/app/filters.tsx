@@ -3,6 +3,7 @@ import { violationMeta, ViolationRegions } from '../violation'
 import { borders } from '../borders'
 import { Select, DatePicker } from 'antd'
 import dayjs from 'dayjs'
+import { isNotion } from '../is-notion'
 
 export const Filters = (props: {
   region: 'all' | ViolationRegions
@@ -13,7 +14,13 @@ export const Filters = (props: {
   onRangeChange(range: [dayjs.Dayjs, dayjs.Dayjs]): void
 }) => {
   return (
-    <div style={{ display: 'flex', justifyContent: 'center' }}>
+    <div
+      style={{
+        display: 'flex',
+        justifyContent: 'center',
+        marginTop: isNotion() ? 0 : undefined,
+      }}
+    >
       <Select
         className="filters-item"
         placeholder="Все регионы"

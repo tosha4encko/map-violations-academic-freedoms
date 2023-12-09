@@ -11,9 +11,12 @@ import Overlay from 'ol/Overlay'
 import { transformExtent } from 'ol/proj'
 import { defaults as defaultInteractions } from 'ol/interaction'
 import dayjs from 'dayjs'
+import { isNotion } from './is-notion'
 
-const DEFAULT_CENTER = [11811200.657045184, 10877122.707841385]
-const DEFAULT_ZOOM = 2.96
+const DEFAULT_CENTER = isNotion()
+  ? [11100615.486625966, 11225419.476960883]
+  : [11811200.657045184, 10877122.707841385]
+const DEFAULT_ZOOM = isNotion() ? 2.35 : 2.96
 const DEFAULT_EXTENT = transformExtent([-10, 40, 210, 81.9], 'EPSG:4326', 'EPSG:3857')
 
 export function buildTooltipHTML(groups: any, region: string): string {

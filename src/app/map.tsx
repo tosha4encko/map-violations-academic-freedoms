@@ -6,6 +6,7 @@ import { ViolationRegions } from '../violation'
 import { Vector as VectorLayer } from 'ol/layer'
 import { Vector as VectorSource } from 'ol/source'
 import dayjs from 'dayjs'
+import { isNotion } from '../is-notion'
 
 export function AcademViolationMap(props: {
   region?: ViolationRegions
@@ -45,7 +46,10 @@ export function AcademViolationMap(props: {
   }, [props, vectorLayer])
 
   return (
-    <div id="map" style={{ width: 1000, height: 600, margin: '0 auto' }}>
+    <div
+      id="map"
+      style={{ width: isNotion() ? 800 : 1000, height: isNotion() ? 400 : 600, margin: '0 auto' }}
+    >
       <div id="popup"></div>
     </div>
   )
