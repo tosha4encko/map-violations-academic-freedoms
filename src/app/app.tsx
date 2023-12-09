@@ -14,8 +14,7 @@ export const App = () => {
 
   return (
     <div
-      className="app-container"
-      style={isNotion() ? { maxWidth: 950, maxHeight: 930, marginBottom: 0 } : undefined}
+      className={isNotion() ? 'app-container notion' : 'app-container'}
     >
       {!isNotion() ? (
         <>

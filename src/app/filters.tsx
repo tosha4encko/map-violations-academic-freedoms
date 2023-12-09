@@ -22,7 +22,7 @@ export const Filters = (props: {
       }}
     >
       <Select
-        className="filters-item"
+        className={isNotion() ? 'filters-item notion' : 'filters-item'}
         placeholder="Все регионы"
         showSearch
         value={props.region}
@@ -34,7 +34,7 @@ export const Filters = (props: {
         ))}
       </Select>
       <Select
-        className="filters-item"
+        className={isNotion() ? 'filters-item notion' : 'filters-item'}
         placeholder="Все категории"
         showSearch
         value={props.category}
@@ -47,7 +47,7 @@ export const Filters = (props: {
           </Select.Option>
         ))}
       </Select>
-      <div className="filters-item">
+      <div className={isNotion() ? 'filters-item notion' : 'filters-item'}>
         <DatePicker.RangePicker
           value={props.range}
           onChange={props.onRangeChange}

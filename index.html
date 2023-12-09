@@ -12,6 +12,11 @@
       .app-container {
         margin-bottom: 80px
       }
+      .app-container.notion {
+        max-width: 950px;
+        max-height: 930px;
+        margin-bottom: 0;
+      }
       .tooltip-container {
         background: white;
         padding: 10px;
@@ -37,9 +42,14 @@
       }
 
       .violations-table-container {
+        max-height: 450;
         margin: 0 40px;
         max-height: 600px;
         overflow: auto;
+      }
+      .violations-table-container.notion {
+        margin: 0;
+        margin-top: 20px;
       }
       .violations-table-title {
         text-align: center;
@@ -66,7 +76,11 @@
       }
       .filters-item {
         width: 300px;
-        margin: 20px 10px
+        margin: 20px 10px;
+      }
+      .filters-item.notion {
+        margin: 0 10px;
+        margin-bottom: 10px;
       }
 
     </style>

@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react'
 import { IViolation, toTimestamp } from '../violation'
 import dayjs from 'dayjs'
+import { isNotion } from '../is-notion'
 
 export function ViolationsTable(props: {
   region: string
@@ -30,8 +31,10 @@ export function ViolationsTable(props: {
   }
 
   return (
-    <div className="violations-table-container" style={{ maxHeight: 450 }}>
-      {!process.env.IS_NOTION ? <h3 className="violations-table-title"> {props.region}</h3> : null}
+    <div
+      className={isNotion() ? 'violations-table-container notion' : 'violations-table-container'}
+    >
+      {!isNotion() ? <h3 className="violations-table-title"> {props.region}</h3> : null}
       <table className="violations-table-table">
         <thead>
           <tr>
