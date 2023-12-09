@@ -5,11 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Карта нарушений академических свобод</title>
     <style>
-      body {
+         body {
         font-family: Jost,sans-serif;
       }
       .app-container {
         margin-bottom: 80px
+      }
+      .app-container.notion {
+        max-width: 950px;
+        max-height: 930px;
+        margin-bottom: 0;
       }
       .tooltip-container {
         background: white;
@@ -36,10 +41,14 @@
       }
 
       .violations-table-container {
-        margin: 0 auto;
-        width: 80%;
+        margin: 0 40px;
         max-height: 600px;
         overflow: auto;
+      }
+      .violations-table-container.notion {
+        margin: 0;
+        margin-top: 20px;
+        max-height: 450px;
       }
       .violations-table-title {
         text-align: center;
@@ -64,12 +73,20 @@
         overflow: hidden;
         text-wrap: nowrap;
       }
+      .filters-item {
+        width: 300px;
+        margin: 20px 10px;
+      }
+      .filters-item.notion {
+        margin: 0 10px;
+        margin-bottom: 10px;
+      }
+
     </style>
   </head>
 
   <body>
     <div id="root"></div>
-    <script src="dist/bundle.js"></script>
     <script src="gp-pages-dist/bundle.js"></script>
   </body>
   
