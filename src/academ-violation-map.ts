@@ -12,6 +12,7 @@ import { transformExtent } from 'ol/proj'
 import { defaults as defaultInteractions } from 'ol/interaction'
 import dayjs from 'dayjs'
 import { isNotion } from './is-notion'
+import { interpolateColor } from './interpolate-color'
 
 const DEFAULT_CENTER = isNotion()
   ? [11100615.486625966, 11225419.476960883]
@@ -66,18 +67,13 @@ export function createStyle(
         })
       }
     }
-    const intensity = currentViolations?.length || 0
-    const opacity = intensity / 5
-    const fillColor = `rgba(255, ${Math.round(255 - 255 * opacity)}, ${Math.round(
-      255 - 255 * opacity,
-    )}, ${opacity})`
 
     return new Style({
       fill: new Fill({
-        color: fillColor,
+        color: interpolateColor(currentViolations?.length || 0),
       }),
       stroke: new Stroke({
-        color: '#101010',
+        color: '#fff',
         width: region === feature.get('region') ? 3 : 2,
       }),
     })
