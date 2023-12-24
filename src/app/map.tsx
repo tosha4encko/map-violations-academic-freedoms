@@ -2,26 +2,30 @@ import React, { useEffect, useState } from 'react'
 import { Map, Feature } from 'ol'
 import { createLayer, createMap, createStyle, createTooltip } from '../academ-violation-map'
 import { FeatureLike } from 'ol/Feature'
-import { ViolationRegions } from '../violation'
 import { Vector as VectorLayer } from 'ol/layer'
 import { Vector as VectorSource } from 'ol/source'
 import dayjs from 'dayjs'
 import { isNotion } from '../is-notion'
+import { IViolations } from '../violation'
 
 export function AcademViolationMap(props: {
-  region?: ViolationRegions
+  region?: string
   category?: string
   range?: [dayjs.Dayjs, dayjs.Dayjs]
   onSelectFeature(feature?: FeatureLike): void
+  violations: IViolations
 }) {
   const [_, setMap] = useState<Map>()
   const [vectorLayer, setVectorLayer] = useState<VectorLayer<VectorSource<Feature>>>()
 
   useEffect(() => {
+    if (!Object.keys(props.violations).length) {
+      return
+    }
     const layer = createLayer()
-    layer.setStyle(createStyle(props.category))
+    layer.setStyle(createStyle(props.violations, props.category))
     const map = createMap(layer)
-    createTooltip(map)
+    createTooltip(map, props.violations)
     // @ts-ignore
     window.map = map
     setMap(map)
@@ -34,14 +38,14 @@ export function AcademViolationMap(props: {
         props.onSelectFeature(features[0])
       } else {
         props.onSelectFeature()
-        layer.setStyle(createStyle(props.category))
+        layer.setStyle(createStyle(props.violations, props.category))
       }
     })
-  }, [])
+  }, [props.violations, props.category])
 
   useEffect(() => {
     if (vectorLayer !== undefined) {
-      vectorLayer.setStyle(createStyle(props.category, props.region, props.range))
+      vectorLayer.setStyle(createStyle(props.violations, props.category, props.region, props.range))
     }
   }, [props, vectorLayer])
 

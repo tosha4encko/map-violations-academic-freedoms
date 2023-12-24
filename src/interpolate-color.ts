@@ -1,12 +1,7 @@
-import { maxViolation } from './violation'
+const startColor = '#fbe2e2'
+const endColor = '#6a0909'
 
-const startColor = '#c10000'
-const endColor = '#121212'
-
-export function interpolateColor(size: number): string {
-  if (size === maxViolation) {
-    debugger
-  }
+export function interpolateColor(size: number, maxViolation: number): string {
   const normalizedPopulation = size / maxViolation
 
   const r1 = parseInt(startColor.slice(1, 3), 16)

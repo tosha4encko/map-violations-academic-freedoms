@@ -1,21 +1,26 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import dayjs from 'dayjs'
 import { AcademViolationMap } from './map'
-import { IViolation, violation, ViolationRegions, violationTypes } from '../violation'
+import { IViolation, IViolations, getViolations } from '../violation'
 import { ViolationsTable } from './violations-table'
 import { Filters } from './filters'
 import { isNotion } from '../is-notion'
+import { Spin } from 'antd'
 
 export const App = () => {
-  const [region, setRegion] = useState<ViolationRegions>()
+  const [region, setRegion] = useState<string>()
   const [range, setRange] = useState<[dayjs.Dayjs, dayjs.Dayjs]>()
   const [category, setCategory] = useState<string>()
-  const violations: IViolation[] = region ? violation[region] : []
+
+  const [allViolations, setAllViolations] = useState<IViolations>({})
+  const violations: IViolation[] = allViolations?.[region] || []
+
+  useEffect(() => {
+    getViolations().then((violations) => setAllViolations(violations))
+  }, [setAllViolations])
 
   return (
-    <div
-      className={isNotion() ? 'app-container notion' : 'app-container'}
-    >
+    <div className={isNotion() ? 'app-container notion' : 'app-container'}>
       {!isNotion() ? (
         <>
           <h2 style={{ textAlign: 'center', fontSize: 27 }}>
@@ -33,13 +38,17 @@ export const App = () => {
         onCategoryChange={setCategory}
         range={range}
         onRangeChange={setRange}
+        violations={allViolations}
       />
-      <AcademViolationMap
-        range={range}
-        region={region}
-        onSelectFeature={(feature) => setRegion(feature?.get('region'))}
-        category={category}
-      />
+      <Spin spinning={!Object.keys(allViolations).length}>
+        <AcademViolationMap
+          range={range}
+          region={region}
+          onSelectFeature={(feature) => setRegion(feature?.get('region'))}
+          category={category}
+          violations={allViolations}
+        />
+      </Spin>
       {violations?.length ? (
         <ViolationsTable
           region={region}

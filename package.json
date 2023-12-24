@@ -8,7 +8,8 @@
     "start": "webpack --mode development --watch",
     "build": "webpack --mode production",
     "predeploy": "npm run build",
-    "deploy": "gh-pages -d dist index.html"
+    "deploy": "gh-pages -d dist index.html",
+    "serve": "webpack-dev-server --open --mode development"
   },
   "author": "",
   "license": "ISC",
@@ -30,9 +31,9 @@
     "webpack-dev-server": "^4.15.1"
   },
   "dependencies": {
-    "ol": "^8.2.0",
     "antd": "^5.11.5",
     "dayjs": "^1.11.10",
+    "ol": "^8.2.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   }

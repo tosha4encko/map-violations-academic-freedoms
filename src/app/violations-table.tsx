@@ -1,7 +1,8 @@
 import React, { useMemo } from 'react'
-import { IViolation, toTimestamp } from '../violation'
+import { IViolation } from '../violation'
 import dayjs from 'dayjs'
 import { isNotion } from '../is-notion'
+import { toTimestamp } from '../to-timestamp'
 
 export function ViolationsTable(props: {
   region: string

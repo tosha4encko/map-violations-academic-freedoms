@@ -5,7 +5,6 @@ import { Layer as LayerBase, Vector as VectorLayer } from 'ol/layer'
 import { Vector as VectorSource } from 'ol/source'
 import { Feature } from 'ol'
 import { borders } from './borders'
-import { toTimestamp, violation, ViolationRegions } from './violation'
 import { Style, Stroke, Fill } from 'ol/style'
 import Overlay from 'ol/Overlay'
 import { transformExtent } from 'ol/proj'
@@ -13,6 +12,8 @@ import { defaults as defaultInteractions } from 'ol/interaction'
 import dayjs from 'dayjs'
 import { isNotion } from './is-notion'
 import { interpolateColor } from './interpolate-color'
+import { getMaxViolation, IViolations } from './violation'
+import { toTimestamp } from './to-timestamp'
 
 const DEFAULT_CENTER = isNotion()
   ? [11100615.486625966, 11225419.476960883]
@@ -48,12 +49,13 @@ export function buildTooltipHTML(groups: any, region: string): string {
 }
 
 export function createStyle(
+  violations: IViolations,
   violationType?: string,
-  region?: ViolationRegions,
+  region?: string,
   range?: [dayjs.Dayjs, dayjs.Dayjs],
 ) {
   const heatMapStyle = (feature) => {
-    let currentViolations = violation[feature.get('region')]
+    let currentViolations = violations[feature.get('region')]
     if (currentViolations) {
       if (violationType) {
         currentViolations = currentViolations.filter(({ type }) => type === violationType)
@@ -70,7 +72,7 @@ export function createStyle(
 
     return new Style({
       fill: new Fill({
-        color: interpolateColor(currentViolations?.length || 0),
+        color: interpolateColor(currentViolations?.length || 0, getMaxViolation(violations)[0]),
       }),
       stroke: new Stroke({
         color: '#fff',
@@ -110,7 +112,7 @@ export function createMap(layers: LayerBase) {
   })
 }
 
-export function createTooltip(map: Map) {
+export function createTooltip(map: Map, violations: IViolations) {
   const overlay = new Overlay({
     element: document.getElementById('popup'),
     autoPan: true,
@@ -121,7 +123,7 @@ export function createTooltip(map: Map) {
   map.on('pointermove', (event) => {
     const feature = map.forEachFeatureAtPixel(event.pixel, (feature) => feature)
     if (feature) {
-      const currentViolations = violation[feature.get('region') as keyof typeof violation] || []
+      const currentViolations = violations[feature.get('region') as keyof typeof violations] || []
       const groups = {}
       for (const violation of currentViolations) {
         if (groups[violation.type] === undefined) {
