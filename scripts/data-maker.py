@@ -5,10 +5,10 @@ print("Текущая рабочая директория:", os.getcwd())
 # Создаем пустой список для хранения данных из CSV
 # data = []
 #
-# with open("../regions.json", "r") as regions_file:
+# with open("../scripts/regions.json", "r") as regions_file:
 #     regions = json.load(regions_file)
 #
-#     with open("../region-to-location.json") as to_locations_file:
+#     with open("../scripts/region-to-location.json") as to_locations_file:
 #         to_locations = json.load(to_locations_file)
 #
 #         r_to_locations = to_locations.values()
@@ -17,7 +17,7 @@ print("Текущая рабочая директория:", os.getcwd())
 #                 print(rr)
 
 # # Список файлов CSV, которые нужно объединить
-# csv_files = ["../table1.csv", "../table2.csv", "../table3.csv"]
+# csv_files = ["../scripts/table1.csv", "../scripts/table2.csv", "../scripts/table3.csv"]
 #
 # # Читаем данные из каждого файла CSV и добавляем их в список data
 # for csv_file in csv_files:
@@ -30,8 +30,8 @@ print("Текущая рабочая директория:", os.getcwd())
 # citys = set(map(lambda d: d['где'], data))
 # print("Данные успешно объединены в файл output.json")
 
-regions_map_f = open('../region-to-location.json', 'r')
-violations_f = open('output.json', 'r')
+regions_map_f = open('../scripts/region-to-location.json', 'r')
+violations_f = open('../scripts/output.json', 'r')
 
 regions_map = json.load(regions_map_f)
 violations = json.load(violations_f)
@@ -52,4 +52,4 @@ for violation in violations:
         "region": region,
     })
 
-json.dump(res, open('../all-violations.json', 'w'))
+json.dump(res, open('../scripts/all-violations.json', 'w', encoding='utf8'), ensure_ascii=False)
