@@ -1,4 +1,4 @@
-const startColor = '#fbe2e2'
+const startColor = '#efb2b2'
 const endColor = '#6a0909'
 
 export function interpolateColor(size: number, maxViolation: number): string {
