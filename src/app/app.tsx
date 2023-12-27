@@ -52,6 +52,7 @@ export const App = () => {
           onSelectFeature={(feature) => setRegion(feature?.get('region'))}
           category={category}
           violations={filteredViolations}
+          allViolations={allViolations}
         />
       </Spin>
       {violations?.length ? (

@@ -6,12 +6,12 @@ import { Vector as VectorSource } from 'ol/source'
 import { Feature } from 'ol'
 import { borders } from './borders'
 import { Style, Stroke, Fill } from 'ol/style'
-import Overlay from 'ol/Overlay'
 import { transformExtent } from 'ol/proj'
 import { defaults as defaultInteractions } from 'ol/interaction'
 import { isNotion } from './is-notion'
 import { interpolateColor } from './interpolate-color'
 import { getMaxViolation, IViolations, ViolationFilters } from './violation'
+import Overlay from 'ol/Overlay'
 
 const DEFAULT_CENTER = isNotion()
   ? [11100615.486625966, 11225419.476960883]
@@ -97,12 +97,10 @@ export function createTooltip(map: Map, violations: IViolations) {
     element: document.getElementById('popup'),
     autoPan: true,
   })
-
   map.addOverlay(overlay)
-
-  map.on('pointermove', (event) => {
+  const visivleOverlay = (event) => {
     const feature = map.forEachFeatureAtPixel(event.pixel, (feature) => feature)
-    if (feature) {
+    if (feature && overlay.getElement()) {
       const currentViolations = violations[feature.get('region') as keyof typeof violations] || []
       const groups = {}
       for (const violation of currentViolations) {
@@ -117,5 +115,11 @@ export function createTooltip(map: Map, violations: IViolations) {
     } else {
       overlay.setPosition(undefined)
     }
-  })
+  }
+
+  map.on('pointermove', visivleOverlay)
+
+  return () => {
+    map.un('pointermove', visivleOverlay)
+  }
 }

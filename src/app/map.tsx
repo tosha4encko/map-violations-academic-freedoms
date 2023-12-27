@@ -6,7 +6,7 @@ import { Vector as VectorLayer } from 'ol/layer'
 import { Vector as VectorSource } from 'ol/source'
 import dayjs from 'dayjs'
 import { isNotion } from '../is-notion'
-import { IViolations } from '../violation'
+import { IViolation, IViolations } from '../violation'
 
 export function AcademViolationMap(props: {
   region?: string
@@ -14,6 +14,7 @@ export function AcademViolationMap(props: {
   range?: [dayjs.Dayjs, dayjs.Dayjs]
   onSelectFeature(feature?: FeatureLike): void
   violations: IViolations
+  allViolations: IViolations
 }) {
   const [map, setMap] = useState<Map>()
   const [vectorLayer, setVectorLayer] = useState<VectorLayer<VectorSource<Feature>>>()
@@ -23,7 +24,6 @@ export function AcademViolationMap(props: {
     layer.setStyle(createStyle(props.violations, props))
 
     const map = createMap(layer)
-    createTooltip(map, props.violations)
     // @ts-ignore
     window.map = map
     setMap(map)
@@ -42,8 +42,20 @@ export function AcademViolationMap(props: {
   useEffect(() => {
     if (vectorLayer !== undefined) {
       vectorLayer.setStyle(createStyle(props.violations, props))
+      const overlayDestruct = createTooltip(map, props.allViolations)
+
+      return () => {
+        overlayDestruct()
+      }
     }
-  }, [props.violations, props.region, props.range, props.category, vectorLayer])
+  }, [
+    props.violations,
+    props.allViolations,
+    props.region,
+    props.range,
+    props.category,
+    vectorLayer,
+  ])
 
   return (
     <div
