@@ -46,8 +46,11 @@ export function getMetaViolations(violations: IViolations) {
 
   for (const violation of iterateViolations(violations)) {
     violationMeta.types.add(violation.type)
-    violationMeta.minDate = Math.min(violationMeta.minDate, toTimestamp(violation.date))
-    violationMeta.maxDate = Math.max(violationMeta.maxDate, toTimestamp(violation.date))
+    const currentDate = toTimestamp(violation.date)
+    if (!isNaN(currentDate)) {
+      violationMeta.minDate = Math.min(violationMeta.minDate, toTimestamp(violation.date))
+      violationMeta.maxDate = Math.max(violationMeta.maxDate, toTimestamp(violation.date))
+    }
   }
 
   return violationMeta
@@ -67,4 +70,49 @@ export function getMaxViolation(violations: IViolations): [number, string] {
   }
 
   return [maxViolation, region]
+}
+
+export interface ViolationFilters {
+  range: [dayjs.Dayjs, dayjs.Dayjs]
+  region: string
+  category: string
+  filterStr: string
+}
+
+export function applyFiltersToList(
+  violations: IViolation[],
+  { range, category, filterStr }: Partial<ViolationFilters>,
+) {
+  let actualViolations = violations
+  if (filterStr) {
+    actualViolations = actualViolations.filter(
+      ({ description, source, date, where }) =>
+        source.toLowerCase().includes(filterStr.toLowerCase()) ||
+        description.toLowerCase().includes(filterStr.toLowerCase()) ||
+        date.toLowerCase().includes(filterStr.toLowerCase()) ||
+        where.toLowerCase().includes(filterStr.toLowerCase()),
+    )
+  }
+  if (category) {
+    actualViolations = actualViolations.filter(({ type }) => type === category)
+  }
+  if (range) {
+    actualViolations = actualViolations.filter(({ date }) => {
+      const current = toTimestamp(date)
+      const b1 = range[0].valueOf()
+      const b2 = range[1].valueOf()
+      return current >= b1 && current <= b2
+    })
+  }
+
+  return actualViolations
+}
+
+export function applyFiltersToAll(violations: IViolations, filters: Partial<ViolationFilters>) {
+  const res = {}
+  for (const region in violations) {
+    res[region] = applyFiltersToList(violations[region], filters)
+  }
+
+  return res
 }

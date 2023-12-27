@@ -9,11 +9,9 @@ import { Style, Stroke, Fill } from 'ol/style'
 import Overlay from 'ol/Overlay'
 import { transformExtent } from 'ol/proj'
 import { defaults as defaultInteractions } from 'ol/interaction'
-import dayjs from 'dayjs'
 import { isNotion } from './is-notion'
 import { interpolateColor } from './interpolate-color'
-import { getMaxViolation, IViolations } from './violation'
-import { toTimestamp } from './to-timestamp'
+import { getMaxViolation, IViolations, ViolationFilters } from './violation'
 
 const DEFAULT_CENTER = isNotion()
   ? [11100615.486625966, 11225419.476960883]
@@ -48,27 +46,9 @@ export function buildTooltipHTML(groups: any, region: string): string {
   `
 }
 
-export function createStyle(
-  violations: IViolations,
-  violationType?: string,
-  region?: string,
-  range?: [dayjs.Dayjs, dayjs.Dayjs],
-) {
+export function createStyle(violations: IViolations, filters: Partial<ViolationFilters>) {
   const heatMapStyle = (feature) => {
-    let currentViolations = violations[feature.get('region')]
-    if (currentViolations) {
-      if (violationType) {
-        currentViolations = currentViolations.filter(({ type }) => type === violationType)
-      }
-      if (range) {
-        currentViolations = currentViolations.filter(({ date }) => {
-          const current = toTimestamp(date)
-          const b1 = range[0].valueOf()
-          const b2 = range[1].valueOf()
-          return current >= b1 && current <= b2
-        })
-      }
-    }
+    let currentViolations = violations[feature.get('region')] || []
 
     return new Style({
       fill: new Fill({
@@ -76,7 +56,7 @@ export function createStyle(
       }),
       stroke: new Stroke({
         color: '#fff',
-        width: region === feature.get('region') ? 3 : 2,
+        width: filters.region === feature.get('region') ? 3 : 2,
       }),
     })
   }

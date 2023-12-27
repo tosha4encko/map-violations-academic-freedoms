@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import dayjs from 'dayjs'
 import { AcademViolationMap } from './map'
-import { IViolation, IViolations, getViolations } from '../violation'
+import { IViolation, IViolations, getViolations, applyFiltersToAll } from '../violation'
 import { ViolationsTable } from './violations-table'
 import { Filters } from './filters'
 import { isNotion } from '../is-notion'
@@ -13,11 +13,16 @@ export const App = () => {
   const [category, setCategory] = useState<string>()
 
   const [allViolations, setAllViolations] = useState<IViolations>({})
-  const violations: IViolation[] = allViolations?.[region] || []
+  const [filteredViolations, setFilteredViolations] = useState<IViolations>({})
+  const violations: IViolation[] = filteredViolations?.[region] || []
 
   useEffect(() => {
     getViolations().then((violations) => setAllViolations(violations))
-  }, [setAllViolations])
+  }, [])
+
+  useEffect(() => {
+    setFilteredViolations(applyFiltersToAll(allViolations, { range, category }))
+  }, [allViolations, range, category])
 
   return (
     <div className={isNotion() ? 'app-container notion' : 'app-container'}>
@@ -46,16 +51,11 @@ export const App = () => {
           region={region}
           onSelectFeature={(feature) => setRegion(feature?.get('region'))}
           category={category}
-          violations={allViolations}
+          violations={filteredViolations}
         />
       </Spin>
       {violations?.length ? (
-        <ViolationsTable
-          region={region}
-          violations={violations || []}
-          category={category}
-          range={range}
-        />
+        <ViolationsTable region={region} violations={violations || []} />
       ) : null}
     </div>
   )

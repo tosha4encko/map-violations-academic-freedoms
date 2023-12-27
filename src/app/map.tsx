@@ -15,15 +15,13 @@ export function AcademViolationMap(props: {
   onSelectFeature(feature?: FeatureLike): void
   violations: IViolations
 }) {
-  const [_, setMap] = useState<Map>()
+  const [map, setMap] = useState<Map>()
   const [vectorLayer, setVectorLayer] = useState<VectorLayer<VectorSource<Feature>>>()
 
   useEffect(() => {
-    if (!Object.keys(props.violations).length) {
-      return
-    }
     const layer = createLayer()
-    layer.setStyle(createStyle(props.violations, props.category))
+    layer.setStyle(createStyle(props.violations, props))
+
     const map = createMap(layer)
     createTooltip(map, props.violations)
     // @ts-ignore
@@ -35,19 +33,17 @@ export function AcademViolationMap(props: {
       const features = map.getFeaturesAtPixel(ev.pixel)
       if (features?.length) {
         props.onSelectFeature(features[0])
-        props.onSelectFeature(features[0])
       } else {
         props.onSelectFeature()
-        layer.setStyle(createStyle(props.violations, props.category))
       }
     })
-  }, [props.violations, props.category])
+  }, [])
 
   useEffect(() => {
     if (vectorLayer !== undefined) {
-      vectorLayer.setStyle(createStyle(props.violations, props.category, props.region, props.range))
+      vectorLayer.setStyle(createStyle(props.violations, props))
     }
-  }, [props, vectorLayer])
+  }, [props.violations, props.region, props.range, props.category, vectorLayer])
 
   return (
     <div
