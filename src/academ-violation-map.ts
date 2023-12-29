@@ -17,7 +17,7 @@ const DEFAULT_CENTER = isNotion()
   ? [11100615.486625966, 11225419.476960883]
   : [11811200.657045184, 10877122.707841385]
 const DEFAULT_ZOOM = isNotion() ? 2.35 : 2.96
-const DEFAULT_EXTENT = transformExtent([-10, 40, 210, 81.9], 'EPSG:4326', 'EPSG:3857')
+const DEFAULT_EXTENT = transformExtent([-140, 5, 322, 85], 'EPSG:4326', 'EPSG:3857')
 
 export function buildTooltipHTML(groups: any, region: string): string {
   const slicedGroups = Object.entries(groups)
@@ -95,7 +95,6 @@ export function createMap(layers: LayerBase) {
 export function createTooltip(map: Map, violations: IViolations) {
   const overlay = new Overlay({
     element: document.getElementById('popup'),
-    autoPan: true,
   })
   map.addOverlay(overlay)
   const visivleOverlay = (event) => {

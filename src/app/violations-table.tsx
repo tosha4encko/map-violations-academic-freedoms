@@ -15,6 +15,12 @@ export function ViolationsTable(props: { region: string; violations: IViolation[
     return null
   }
 
+  function goToSource(source: string) {
+    if (source) {
+      window.open(source, '_blank')
+    }
+  }
+
   return (
     <div
       className={isNotion() ? 'violations-table-container notion' : 'violations-table-container'}
@@ -33,25 +39,21 @@ export function ViolationsTable(props: { region: string; violations: IViolation[
               <th>Когда</th>
               <th>Где</th>
               <th>Что</th>
-              <th>Источник</th>
             </tr>
           </thead>
           <tbody>
             {currentViolations.map((item, index) => (
-              <tr key={index}>
+              <tr
+                key={index}
+                onClick={() => goToSource(item.source)}
+                className="violations-table-tr"
+              >
                 <td title={item.date} className="violations-table-table-date">
                   {item.date}
                 </td>
                 <td title={item.where}>{item.where}</td>
                 <td title={item.description} className="violations-table-table-description">
                   {item.description}
-                </td>
-                <td title={item.source} className="violations-table-table-source">
-                  {item.source.includes('http') ? (
-                    <a href={item.source}>{item.source}</a>
-                  ) : (
-                    item.source
-                  )}
                 </td>
               </tr>
             ))}
